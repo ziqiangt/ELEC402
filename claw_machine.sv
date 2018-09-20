@@ -11,7 +11,7 @@ output logic 	[3:0]	strength;	//up to 9 strength
 output logic 	[3:0]	balance;	//up tp 12 dollars refund
 
 //FSM
-typedef enum{IDEL, S0, S1, S2, S3, S4, S5, S6, S7, S8, S9} fsmstate_e;	//10 states
+typedef enum{IDEL, S1, S2, S3, S4, S5, S6, S7, S8, S9} fsmstate_e;	//10 states
 
 fsmstate_e cstate;	//current state
 fsmstate_e nstate;	//next state
