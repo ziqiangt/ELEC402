@@ -1,27 +1,36 @@
 `timescale 1ns/1ps
 
-module claw_machine_tb(rstn, clk, one, two, catch, refund, strength, balance);
+module claw_machine_tb(rstn, clk, enable, one, two, catch, refund, strength, balance, strength_LED, balance_units_LED, balance_tens_LED, max_count);
 
 //I/O ports
 input  logic		rstn;
+input  logic		enable;
 input  logic		clk;
 input  logic		one;
 input  logic		two;
 input  logic		catch;
 input  logic		refund;		
-output logic 	[3:0]	strength;	//up to 9 strength
-output logic 	[3:0]	balance;	//up tp 12 dollars refund
-
+output logic 	[3:0]	strength;		//up to 9 strength
+output logic 	[3:0]	balance;		//up tp 14 dollars refund
+output logic 	[6:0]	strength_LED;		//7 segments to display strength
+output logic 	[6:0]	balance_units_LED;	//7 segments to display balance
+output logic 	[6:0]	balance_tens_LED;	//7 segments to display balance
+output logic 	[31:0]	max_count;		//counter
 //dut
-claw_machine dut(
+claw_machine_map dut(
        .rstn(rstn),
+       .enable(enable),
        .clk(clk),
        .one(one),
        .two(two),
        .catch(catch),
        .refund(refund),		
        .strength(strength),	
-       .balance(balance)	
+       .balance(balance),
+       .strength_LED(strength_LED),
+       .balance_units_LED(balance_units_LED),
+       .balance_tens_LED(balance_tens_LED),
+       .max_count(max_count)	
 );
 
 //clock generator
@@ -39,6 +48,12 @@ initial begin
 	rstn <= 1;
 end
 
+//enable trigger
+initial begin
+	#100 enable <= 0;
+	repeat(10) @(posedge clk);
+	enable <= 1;
+end
 //task for five combinations of sequence_generator
 task sequence_generator(input reg[3:0] data_seq);	//data_seq 4 bits which represents signal: one, two, catch, refund seperatly 
 	casez(data_seq)
@@ -122,8 +137,8 @@ initial begin
 
 	//let's verify the two dollars state transfer function-------------------------------------------------------------
 	$display("let's generate 5 two dollar and this will refound 10 dollars");	
-	repeat(5)	sequence_generator(4'b0100);	//refund 10 dollars and then return to IDLE
-	if(strength != 4'b0000 && balance != 4'b1010)
+	repeat(6)	sequence_generator(4'b0100);	//refund 10 dollars and then return to IDLE
+	if(strength != 4'b0000 && balance != 4'b1100)
 		$display("Sorry, this function is worng! The supposed output is: strengh=4'b0000, balance=4'b1010\n");
 	else
 		$display("Congradulations! This function is pass.\n");
