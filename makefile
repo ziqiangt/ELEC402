@@ -4,7 +4,7 @@ create_lib:
 	vlib work
 
 comp:
-	vlog -l comp.log claw_machine.sv claw_machine_tb.sv -sv
+	vlog -l comp.log claw_machine_2nd.sv claw_machine_tb.sv -sv
 
 sim:
 	vsim -l sim.log -c claw_machine_tb -do "log -r *; run -all"
